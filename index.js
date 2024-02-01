@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 const { program } = require("commander");
 const generateItinerary = require('./commands/generateItinerary')
-var lg = "en" // default language
+const lg = "en" // default language
 program.version("0.0.1").description("Itinerary PDF from yaml generator");
 
 program
