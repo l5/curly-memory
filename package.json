@@ -1,0 +1,21 @@
+{
+  "name": "projectlist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "commander": "^11.1.0",
+    "js-yaml": "^4.1.0",
+    "puppeteer": "^21.6.1"
+  },
+  "bin": {
+    "itinerarygen": "./index.js"
+  }
+}
