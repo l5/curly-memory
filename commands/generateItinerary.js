@@ -185,13 +185,13 @@ function generateItinerary(lg = "en", trip) {
     if (itinerary === 1) {
         return 1
     }
-    $('.triptitle').each(function() {
+    $('.triptitle').each(function () {
         $(this).html(itinerary.trip.title)
     })
-    $('.tripsubtitle').each(function() {
+    $('.tripsubtitle').each(function () {
         $(this).html(itinerary.trip.subtitle)
     })
-    $('.tripdescription').each(function() {
+    $('.tripdescription').each(function () {
         $(this).html(itinerary.trip.description)
     })
     $('#itinerarylist').html('')
@@ -206,9 +206,9 @@ function generateItinerary(lg = "en", trip) {
             cost = i.cost.adult
         }
         var duration = '?'
-        if ('duration' in i && typeof(i.duration) == 'object' && 'recommended' in i.duration) {
+        if ('duration' in i && typeof (i.duration) == 'object' && 'recommended' in i.duration) {
             duration = i.duration.recommended
-        } else if ('duration' in i && typeof(i.duration) == 'string') {
+        } else if ('duration' in i && typeof (i.duration) == 'string') {
             duration = i.duration
         }
         var title = i.name
@@ -219,7 +219,7 @@ function generateItinerary(lg = "en", trip) {
             for (linkid in i.links) {
                 var thisLink = i.links[linkid]
                 links += `<a href="${thisLink.url}">${thisLink.name}</a>`
-                if (linkid < i.links.length - 1) { links += ' | '}
+                if (linkid < i.links.length - 1) { links += ' | ' }
             }
         }
         var newItem = ''
@@ -245,7 +245,7 @@ function generateItinerary(lg = "en", trip) {
                 myDescription = `<p>${i.description}</p>`
             }
             if ('cost' in i) {
-                if (typeof(i.cost) == 'object') {
+                if (typeof (i.cost) == 'object') {
                     myDescription = `<p>Cost: $${i.cost.adult} pp (${i.cost.info})</p>`
                 } else if (i.cost == 0) {
                     myDescription = `<p>Cost: free</p>`
@@ -282,8 +282,8 @@ function generateItinerary(lg = "en", trip) {
             rooms += '</ul><p>'
             description = `${i.locationdescription}<br><br>Rooms: ${rooms}<br>Standard: ${i.standard} | Total cost: ${i.booking.cost.amount} ${i.booking.cost.currency} | Check-In: ${i.checkin.from} - ${i.checkin.to} | Check-Out: by ${i.checkout.by}<br>Address: ${i.address}<br>
                 Links: ${links}`
-            var datefrom = `${weekday[i.checkin.day.getDay()]} ${str_pad(i.checkin.day.getDate())}/${str_pad(i.checkin.day.getMonth())}` 
-            var dateuntil = `${weekday[i.checkout.day.getDay()]} ${str_pad(i.checkout.day.getDate())}/${str_pad(i.checkout.day.getMonth())}` 
+            var datefrom = `${weekday[i.checkin.day.getDay()]} ${str_pad(i.checkin.day.getDate())}/${str_pad(i.checkin.day.getMonth())}`
+            var dateuntil = `${weekday[i.checkout.day.getDay()]} ${str_pad(i.checkout.day.getDate())}/${str_pad(i.checkout.day.getMonth())}`
             newItem =
                 `<tr class="itinerary-type-${i.type}"><td class="timeframe">${datefrom}<br>&rarr;<br>${dateuntil}</td><td class="iteminfo">
                 <h6>${title}</h6><p>${description}</p>
@@ -297,7 +297,7 @@ function generateItinerary(lg = "en", trip) {
                 <h6>${title}</h6><p>${description}</p>
                 </td><td></td>
                 </tr>`
-            
+
         }
         $('#itinerarylist').append(newItem)
     }
