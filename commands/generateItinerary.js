@@ -3,7 +3,7 @@ const fs = require('fs')
 const puppeteer = require('puppeteer')
 const cheerio = require('cheerio')
 
-const output_dir = 'pub/'
+const OUTPUT_DIR = 'pub/'
 const weekday = {
     0: 'Sun',
     1: 'Mon',
@@ -325,7 +325,7 @@ function generateItinerary(lg = "en", trip) {
         await page.emulateMediaType('print')
         await page.setContent($.html())
         await page.pdf({
-            path: output_dir + filename, format: 'A4',
+            path: OUTPUT_DIR + filename, format: 'A4',
             displayHeaderFooter: true,
             printBackground: true,
             headerTemplate: `<span style="font-size: 9px; width: 87%; margin: auto; height: 20px; color: #ccc; font-family: Arial, sans-serif;">${itinerary.trip.title} / ${itinerary.trip.subtitle} | ${translations.itinerary[lg]}</span>`,
@@ -333,7 +333,7 @@ function generateItinerary(lg = "en", trip) {
             margin: { top: "100px", bottom: "50px" }
         })
         await browser.close()
-        console.log('PDF generated as ' + output_dir + filename + '.')
+        console.log('PDF generated as ' + OUTPUT_DIR + filename + '.')
         // var links = {}
         // links[lg] = 'doc/projectlist/' + filename
         // updateLinksInHtml(links)
