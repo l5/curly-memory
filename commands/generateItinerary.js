@@ -2,6 +2,7 @@ const yaml = require('js-yaml')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const cheerio = require('cheerio')
+const Ajv = require("ajv")
 
 const OUTPUT_DIR = 'pub/'
 const weekday = {
@@ -46,6 +47,39 @@ const filetypemap = {
     "jpg": "image/jpg",
     "svg": "image/svg+xml"
 }
+const ajv = new Ajv()
+
+const schema = {
+    type: "object",
+    properties: {
+        trip: {
+            type: "object",
+            properties: {
+                title: { type: "string" },
+                subtitle: { type: "string" },
+                description: { type: "string" },
+            },
+            required: ["title"]
+        },
+        items: {
+            type: "array",
+            items: {
+                type: "object",
+                properties: { 
+                    type: { type: "string",
+                    pattern: "^(drive)|(activity)|(sleep)$" } },
+                required: ["type"]
+            }
+        },
+    },
+    required: ["trip"],
+    additionalProperties: false,
+}
+function validateSchema(schema, data) {
+    const validate = ajv.compile(schema)
+    const valid = validate(data)
+    if (!valid) console.log(validate.errors)
+}
 
 function readVersionNumber(trip) {
     const versionFileFullPath = `trips/${trip}/version`
@@ -66,6 +100,7 @@ function readItineraryFromYaml(trip) {
             return 1
         }
         const doc = yaml.load(fs.readFileSync(yamlFileFullPath, 'utf8'))
+        validateSchema(schema, doc)
         if (doc.hasOwnProperty("items")) {
             const items = doc['items']
             /*const sortedProjects = projects.sort(function (p1, p2) {
