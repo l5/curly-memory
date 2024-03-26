@@ -14,10 +14,5 @@ program
 
 program.parse(process.argv);
 var trip = program.opts().trip
-if (program.opts().language) {
-    lg = program.opts().language
-    generateItinerary(lg, trip)
-} else {
-    generateItinerary('en', trip)
-    // generatePdf('de')
-}
+const language = program.opts().language || 'en';
+generateItinerary(language, trip);
