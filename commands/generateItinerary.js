@@ -395,21 +395,29 @@ function generateItinerary(lg = "en", trip) {
         }
         $('#itinerarylist').append(newItem)
     }
-    let totalPetrolLiters = settings.litresPerKilometer/100*totalDistance * settings.petrolFactor
-    let totalPetrolCost = Math.round(totalPetrolLiters * settings.petrolPerLitre, 2)
+    let totalPetrolLiters = 0
+    let petrolFactor = 1
+    let totalPetrolCost = 0
+    settings.petrolFactor != undefined ? petrolFactor=settings.petrolFactor : null;
+    if (settings.litresPerKilometer && settings.petrolPerLitre) {
+        totalPetrolLiters = settings.litresPerKilometer/100*totalDistance * petrolFactor
+        totalPetrolCost = Math.round(totalPetrolLiters * settings.petrolPerLitre, 2)
+    } else {
+        console.log("If you specify `litresPerKilometer` and `petrolPerLitre` in the trip data, the system can calculate include the petrol cost estimation in the total cost estimation.")
+    }
     totalMandatoryCost = Math.round(totalMandatoryCost, 2)
     totalAccommodationCost = Math.round(totalAccommodationCost, 2)
     let totalTripCost = Math.round(totalMandatoryCost + totalPetrolCost + totalAccommodationCost, 2)
     $('#tripSummary').append(
         `<h2>Cost Estimation<h2><table class="costSummary"><tbody>
-            <tr><th>Total Distance</td><td class="number">${totalDistance} ${settings.unitDistance}</td></tr>
-            <tr><th>Petrol cost</td><td class="number">
+            <tr><th>Total Distance</td><td class="number">${totalDistance} `+ (settings.unitDistance != undefined ? ' ' + settings.unitDistance : '') + `</td></tr>` + 
+            (totalPetrolCost > 0 ? `<tr><th>Petrol cost</td><td class="number">
                 ${settings.petrolPerLitre}${settings.currencySymbol} per litre<br/>
                 ${settings.litresPerKilometer} litres per ${settings.unitDistance}<br/>
                 Factor ${settings.petrolFactor} -> ${totalPetrolLiters} l<br/>
-                <strong>${totalPetrolCost}${settings.currencySymbol}</strong></td></tr>
-            <tr><th>Accommodation Cost</td><td class="number">${totalAccommodationCost}${settings.currencySymbol}</td></tr>
-            <tr><th>Total Trip Cost</td><td class="number">${totalTripCost}${settings.currencySymbol}</td></tr>
+                <strong>Total petrol estimation: ${totalPetrolCost}${settings.currencySymbol}</strong></td></tr>`:``) + `
+            <tr><th>Accommodation Cost estimation</td><td class="number">${totalAccommodationCost} `+ (settings.currencySymbol != undefined ? ' ' + settings.currencySymbol : '') + `</td></tr>
+            <tr><th>Total Trip Cost estimation</td><td class="number">${totalTripCost} `+ (settings.currencySymbol != undefined ? ' ' + settings.currencySymbol : '') + `</td></tr>
         </tbody></table>`
     )
     if ('costNotes' in itinerary.trip) {
