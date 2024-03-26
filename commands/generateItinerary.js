@@ -3,7 +3,7 @@ const fs = require('fs')
 const puppeteer = require('puppeteer')
 const cheerio = require('cheerio')
 
-const OUTPUT_DIR = 'pub/'
+const output_dir = 'pub/'
 const weekday = {
     0: 'Sun',
     1: 'Mon',
@@ -152,8 +152,100 @@ function renderMenu(food) {
 function str_pad(n) {
     return String("00" + n).slice(-2);
 }
+function renderActivity(i, mytype, description, links, duration, settings, cost) {
+    newItem = ''
+    var title = i.name
+    mytype = 'Activity'
+            if (i.mandatory == false) {
+                mytype += ' (optional)'
+            }
+            if (i.recommended == true) {
+                mytype += ' <strong>*recommended*<strong>'
+            }
+            
+            var myDescription = ''
+            if ('description' in i) {
+                myDescription = `<p>${i.description}</p>`
+            }
+            if ('cost' in i) {
+                if (typeof(i.cost) == 'object') {
+                    if ('adult' in i.cost) {
+                        myDescription += `<p>Cost: ${i.cost.adult}${settings.currencySymbol} pp (${i.cost.info})</p>`
+                    } else {
+                        myDescription += `<p>Cost: ${i.cost.info}</p>`
+                    }
+                } else if (i.cost == 0) {
+                    myDescription += `<p>Cost: free</p>`
+                } else {
+                    myDescription += `<p>Cost: ${i.cost}${settings.currencySymbol} pp</p>`
+                }
+            }
+            newItem =
+                `<tr class="itinerary-type-${i.type}">
+                <td class="timeframe">${mytype}</td><td class="iteminfo">
+                <h6>${title}</h6>${myDescription}`
+            if (links != "") {
+                newItem += `<p>Links: ${links}</p>`
+            }
+            newItem += `</td>
+                </tr>`
+    return newItem
+}
+
+function renderDriveStop(i, settings) {
+    newItem = ''
+    var title = i.name
+    var links = ""
+    if ('links' in i) {
+        for (linkid in i.links) {
+            var thisLink = i.links[linkid]
+            links += `<a href="${thisLink.url}">${thisLink.name}</a>`
+            if (linkid < i.links.length - 1) { links += ' | '}
+        }
+    }
+    mytype = 'Activity'
+            if (i.mandatory == false) {
+                mytype += ' (optional)'
+            }
+            if (i.recommended == true) {
+                mytype += ' <strong>*recommended*<strong>'
+            }
+            
+            var myDescription = ''
+            if ('description' in i) {
+                myDescription = `<p>${i.description}</p>`
+            }
+            if ('cost' in i) {
+                if (typeof(i.cost) == 'object') {
+                    if ('adult' in i.cost) {
+                        myDescription += `<p>Cost: ${i.cost.adult}${settings.currencySymbol} pp (${i.cost.info})</p>`
+                    } else {
+                        myDescription += `<p>Cost: ${i.cost.info}</p>`
+                    }
+                } else if (i.cost == 0) {
+                    myDescription += `<p>Cost: free</p>`
+                } else {
+                    myDescription += `<p>Cost: ${i.cost}${settings.currencySymbol} pp</p>`
+                }
+            }
+            newItem =
+                `<tr class="itinerary-type-${i.type}">
+                <td class="driveline"><span class="drivewrapper"><span class="dot"></span><span class="line"></span></span></td>
+                <td class="iteminfo">
+                <h6>${title}</h6>${myDescription}`
+            if (links != "") {
+                newItem += `<p>Links: ${links}</p>`
+            }
+            newItem += `</td>
+                </tr>`
+    return newItem
+}
 
 function generateItinerary(lg = "en", trip) {
+    var totalDistance = 0
+    var totalTravelTime = 0
+    var totalMandatoryCost = 0
+    var totalAccommodationCost = 0
     if (trip == "" || trip === undefined) {
         console.log("Please specify trip name (should be a subdirectory of 'trips')")
         return 1
@@ -185,15 +277,19 @@ function generateItinerary(lg = "en", trip) {
     if (itinerary === 1) {
         return 1
     }
-    $('.triptitle').each(function () {
+    $('.triptitle').each(function() {
         $(this).html(itinerary.trip.title)
     })
-    $('.tripsubtitle').each(function () {
+    $('.tripsubtitle').each(function() {
         $(this).html(itinerary.trip.subtitle)
     })
-    $('.tripdescription').each(function () {
-        $(this).html(itinerary.trip.description)
+    $('.tripdescription').each(function() {
+        $(this).html(itinerary.trip.description.replaceAll("\n", "<br>"))
     })
+    let settings = {}
+    if (itinerary.trip.settings) {
+        settings = itinerary.trip.settings
+    }
     $('#itinerarylist').html('')
 
     for (itemid in itinerary.items) {
@@ -206,9 +302,9 @@ function generateItinerary(lg = "en", trip) {
             cost = i.cost.adult
         }
         var duration = '?'
-        if ('duration' in i && typeof (i.duration) == 'object' && 'recommended' in i.duration) {
+        if ('duration' in i && typeof(i.duration) == 'object' && 'recommended' in i.duration) {
             duration = i.duration.recommended
-        } else if ('duration' in i && typeof (i.duration) == 'string') {
+        } else if ('duration' in i && typeof(i.duration) == 'string') {
             duration = i.duration
         }
         var title = i.name
@@ -219,45 +315,40 @@ function generateItinerary(lg = "en", trip) {
             for (linkid in i.links) {
                 var thisLink = i.links[linkid]
                 links += `<a href="${thisLink.url}">${thisLink.name}</a>`
-                if (linkid < i.links.length - 1) { links += ' | ' }
+                if (linkid < i.links.length - 1) { links += ' | '}
             }
         }
         var newItem = ''
         if (i.type == 'drive') {
             title = i.from.name + " &rarr; " + i.to.name
             mytype = 'Drive'
-            description = `Duration: ${i.duration} * Distance: ${i.distance}`
+            totalDistance += parseInt(i.distance)
+            totalTravelTime += i.duration
+            description = `Duration: ${i.duration} * Distance: ${i.distance} ${settings.unitDistance}`
+            breakok = ""
+            if ('stops' in i && i.stops.length > 0) {
+                breakok = "breakInTr"
+            }
             newItem =
-                `<tr class="itinerary-type-${i.type}"><td class="timeframe">Drive</td>
+                `<tr class="itinerary-type-${i.type} ${breakok}"><td class="timeframe">Drive</td>
                     <td class="iteminfo">
                         <h6>${title}</h6>
-                        <p>${description}</p>
-                    </td><td></td>
+                        <p>${description}</p>`
+            if ('stops' in i && i.stops.length > 0) {
+                newItem += `<table class="driveStopsTable">
+                    <tr><td class="driveline"><span class="drivewrapper"><span class="dot"></span><span class="line"></span></span></td><td colspan="2" class="iteminfo"><strong>${i.from.name}</strong></td></tr>`
+                for (ii in i.stops) {
+                        newItem += renderDriveStop(i.stops[ii], settings)
+                }
+                newItem += `
+                    <tr><td class="driveline driveline-last"><span class="dot"></span></td><td colspan="2" class="iteminfo"><strong>${i.to.name}</strong></td></tr>
+                </table>`
+            }
+            newItem += `</td><td></td>
                 </tr>`
         }
         else if (i.type == 'activity') {
-            mytype = 'Activity'
-            if (i.mandatory == false) {
-                mytype += ' (optional)'
-            }
-            var myDescription = ''
-            if ('description' in i) {
-                myDescription = `<p>${i.description}</p>`
-            }
-            if ('cost' in i) {
-                if (typeof (i.cost) == 'object') {
-                    myDescription = `<p>Cost: $${i.cost.adult} pp (${i.cost.info})</p>`
-                } else if (i.cost == 0) {
-                    myDescription = `<p>Cost: free</p>`
-                } else {
-                    myDescription = `<p>Cost: $${i.cost} pp</p>`
-                }
-            }
-            newItem =
-                `<tr class="itinerary-type-${i.type}"><td class="timeframe">${mytype}</td><td class="iteminfo">
-                <h6>${title}</h6>${myDescription}
-                </td>
-                </tr>`
+            newItem += renderActivity(i, mytype, description, links, duration, settings, cost)
         } else if (i.type == 'food') {
             mytype = 'Snack'
             if ('food' in i) {
@@ -273,6 +364,9 @@ function generateItinerary(lg = "en", trip) {
                 </td>
                 </tr>`
         } else if (i.type == 'sleep') {
+            if (i.booking.cost.amount) {
+                totalAccommodationCost += i.booking.cost.amount
+            }
             mytype = "Night"
             var rooms = '</p><ul>'
             for (r in i.rooms) {
@@ -282,8 +376,8 @@ function generateItinerary(lg = "en", trip) {
             rooms += '</ul><p>'
             description = `${i.locationdescription}<br><br>Rooms: ${rooms}<br>Standard: ${i.standard} | Total cost: ${i.booking.cost.amount} ${i.booking.cost.currency} | Check-In: ${i.checkin.from} - ${i.checkin.to} | Check-Out: by ${i.checkout.by}<br>Address: ${i.address}<br>
                 Links: ${links}`
-            var datefrom = `${weekday[i.checkin.day.getDay()]} ${str_pad(i.checkin.day.getDate())}/${str_pad(i.checkin.day.getMonth())}`
-            var dateuntil = `${weekday[i.checkout.day.getDay()]} ${str_pad(i.checkout.day.getDate())}/${str_pad(i.checkout.day.getMonth())}`
+            var datefrom = `${weekday[i.checkin.day.getDay()]} ${str_pad(i.checkin.day.getDate())}/${str_pad(i.checkin.day.getMonth())}` 
+            var dateuntil = `${weekday[i.checkout.day.getDay()]} ${str_pad(i.checkout.day.getDate())}/${str_pad(i.checkout.day.getMonth())}` 
             newItem =
                 `<tr class="itinerary-type-${i.type}"><td class="timeframe">${datefrom}<br>&rarr;<br>${dateuntil}</td><td class="iteminfo">
                 <h6>${title}</h6><p>${description}</p>
@@ -297,9 +391,39 @@ function generateItinerary(lg = "en", trip) {
                 <h6>${title}</h6><p>${description}</p>
                 </td><td></td>
                 </tr>`
-
+            
         }
         $('#itinerarylist').append(newItem)
+    }
+    let totalPetrolLiters = settings.litresPerKilometer/100*totalDistance * settings.petrolFactor
+    let totalPetrolCost = Math.round(totalPetrolLiters * settings.petrolPerLitre, 2)
+    totalMandatoryCost = Math.round(totalMandatoryCost, 2)
+    totalAccommodationCost = Math.round(totalAccommodationCost, 2)
+    let totalTripCost = Math.round(totalMandatoryCost + totalPetrolCost + totalAccommodationCost, 2)
+    $('#tripSummary').append(
+        `<h2>Cost Estimation<h2><table class="costSummary"><tbody>
+            <tr><th>Total Distance</td><td class="number">${totalDistance} ${settings.unitDistance}</td></tr>
+            <tr><th>Petrol cost</td><td class="number">
+                ${settings.petrolPerLitre}${settings.currencySymbol} per litre<br/>
+                ${settings.litresPerKilometer} litres per ${settings.unitDistance}<br/>
+                Factor ${settings.petrolFactor} -> ${totalPetrolLiters} l<br/>
+                <strong>${totalPetrolCost}${settings.currencySymbol}</strong></td></tr>
+            <tr><th>Accommodation Cost</td><td class="number">${totalAccommodationCost}${settings.currencySymbol}</td></tr>
+            <tr><th>Total Trip Cost</td><td class="number">${totalTripCost}${settings.currencySymbol}</td></tr>
+        </tbody></table>`
+    )
+    if ('costNotes' in itinerary.trip) {
+        $('#tripSummary').append(`<p class="costNotes">${itinerary.trip.costNotes.replaceAll("\n", '<br>')}</p>`)
+    }
+    var accessoriesList = ""
+    for(item in itinerary.trip.accessories) {
+        accessoriesList += `<li>${itinerary.trip.accessories[item].name}</li>`
+    }
+    if (accessoriesList != "") {
+        $('#tripSummary').append(
+            `<h2>Don't forget:</h2>
+            <ul>${accessoriesList}</ul>`
+        )
     }
 
     // $("img").each(function () {
@@ -325,7 +449,7 @@ function generateItinerary(lg = "en", trip) {
         await page.emulateMediaType('print')
         await page.setContent($.html())
         await page.pdf({
-            path: OUTPUT_DIR + filename, format: 'A4',
+            path: output_dir + filename, format: 'A4',
             displayHeaderFooter: true,
             printBackground: true,
             headerTemplate: `<span style="font-size: 9px; width: 87%; margin: auto; height: 20px; color: #ccc; font-family: Arial, sans-serif;">${itinerary.trip.title} / ${itinerary.trip.subtitle} | ${translations.itinerary[lg]}</span>`,
@@ -333,7 +457,7 @@ function generateItinerary(lg = "en", trip) {
             margin: { top: "100px", bottom: "50px" }
         })
         await browser.close()
-        console.log('PDF generated as ' + OUTPUT_DIR + filename + '.')
+        console.log('PDF generated as ' + output_dir + filename + '.')
         // var links = {}
         // links[lg] = 'doc/projectlist/' + filename
         // updateLinksInHtml(links)

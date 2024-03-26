@@ -25,9 +25,5 @@ a simple formatted PDF and/or HTML for easy distribution.
 1. Copy the `trips/example` directory to `trips/<your-trip-name>`
 1. Modify the itinerary yml file to your needs
 1. Set up this software (`npm install`)
-1. Run the PDF generator (`npm index.js -t <your-trip-name>`)
+1. Run the PDF generator (`node index.js -t <your-trip-name>`)
 1. Find your generated PDF itinerary in the `pub` directory
-
-## System Requirements
-
-* nodejs `v21.4.0`

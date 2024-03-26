@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="GitHub L5">
-  <meta name="generator" content="curly-memory">
+  <meta name="generator" content="10 fingers + brain">
   <title>Trip Itinerary</title>
   <style>
     body {
@@ -33,10 +33,13 @@
         width: 90%;
         margin: auto;
         margin-top: 20px;
-        font-size: .6rem;
+        font-size: .8rem;
     }
     tr {
         page-break-inside : avoid;
+    }
+    tr.breakInTr {
+        page-break-inside : auto;
     }
     td {
         border-bottom: 1px solid #cccccc;
@@ -94,10 +97,80 @@
     .itinerary-type-drive {
         background-color: #ccc;
     }
+    #tripSummary {
+        width: 90%;
+        margin: auto;
+        margin-top: 2rem;
+    }
+    table.costSummary {
+        border-collapse: collapse;
+        width: 100;
+    }
+    table.costSummary tbody tr td {
+        font-size: 1rem;
+        text-align: left;
+        vertical-align: top;
+    }
+    table.costSummary tbody tr th {
+        font-size: 1rem;
+        text-align: left;
+    }
+    
+    .number {
+        text-align: right !important;
+    }
+    .costNotes {
+        text-align: left;
+        font-size: .8rem;
+    }
+    .driveStopsTable {
+        border-collapse: collapse;
+        width: 100;
+    }
+    .driveStopsTable tr td {
+        border-style: none;
+    }
+    .driveStopsTable tr td.driveline {
+        padding: 0;
+        height: 1px;
+    }
+    .driveStopsTable tr td.driveline-last {
+        padding: 0;
+    }
+    table.driveStopsTable td.iteminfo {
+        padding-top: 5px;
+    }
+    table.driveStopsTable td.iteminfo h6 {
+        font-weight: bold;
+        font-size: 1rem;
+        margin-top: 0;
+        margin-bottom: .5rem;
+    }
+    .drivewrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+    }
+    .dot {
+        height: 25px;
+        width: 25px;
+        background-color: #666;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0;
+    }
+    .line {
+        width: 11px;
+        padding: 0;
+        margin: 0;
+        flex-grow: 1;
+        border-right: #888 3px solid;
+    }
   </style>
 </head>
 
-<body>
+<body class="dark-mode">
     <h1 class="triptitle">Trip Itinerary</h1>
     <h2><span class="tripsubtitle"></span><br><span class="translate" data-translate="itinerary">Itinerary</span></h2>
     <h3>Version <span class="versionnumber"></span> / <span class="translate" data-translate="generated">Generated</span> <span class="updateddate"></span></h3>
@@ -111,5 +184,7 @@
             <td>blubb bla bling</td>
         </tr>
     </table>
+
+    <div id="tripSummary"></div>
 </body>
 </html>
