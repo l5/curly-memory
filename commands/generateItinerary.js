@@ -156,38 +156,38 @@ function renderActivity(i, mytype, description, links, duration, settings, cost)
     newItem = ''
     var title = i.name
     mytype = 'Activity'
-            if (i.mandatory == false) {
-                mytype += ' (optional)'
+    if (i.mandatory == false) {
+        mytype += ' (optional)'
+    }
+    if (i.recommended == true) {
+        mytype += ' <strong>*recommended*<strong>'
+    }
+
+    var myDescription = ''
+    if ('description' in i) {
+        myDescription = `<p>${i.description}</p>`
+    }
+    if ('cost' in i) {
+        if (typeof (i.cost) == 'object') {
+            if ('adult' in i.cost) {
+                myDescription += `<p>Cost: ${i.cost.adult}${settings.currencySymbol} pp (${i.cost.info})</p>`
+            } else {
+                myDescription += `<p>Cost: ${i.cost.info}</p>`
             }
-            if (i.recommended == true) {
-                mytype += ' <strong>*recommended*<strong>'
-            }
-            
-            var myDescription = ''
-            if ('description' in i) {
-                myDescription = `<p>${i.description}</p>`
-            }
-            if ('cost' in i) {
-                if (typeof(i.cost) == 'object') {
-                    if ('adult' in i.cost) {
-                        myDescription += `<p>Cost: ${i.cost.adult}${settings.currencySymbol} pp (${i.cost.info})</p>`
-                    } else {
-                        myDescription += `<p>Cost: ${i.cost.info}</p>`
-                    }
-                } else if (i.cost == 0) {
-                    myDescription += `<p>Cost: free</p>`
-                } else {
-                    myDescription += `<p>Cost: ${i.cost}${settings.currencySymbol} pp</p>`
-                }
-            }
-            newItem =
-                `<tr class="itinerary-type-${i.type}">
+        } else if (i.cost == 0) {
+            myDescription += `<p>Cost: free</p>`
+        } else {
+            myDescription += `<p>Cost: ${i.cost}${settings.currencySymbol} pp</p>`
+        }
+    }
+    newItem =
+        `<tr class="itinerary-type-${i.type}">
                 <td class="timeframe">${mytype}</td><td class="iteminfo">
                 <h6>${title}</h6>${myDescription}`
-            if (links != "") {
-                newItem += `<p>Links: ${links}</p>`
-            }
-            newItem += `</td>
+    if (links != "") {
+        newItem += `<p>Links: ${links}</p>`
+    }
+    newItem += `</td>
                 </tr>`
     return newItem
 }
@@ -200,43 +200,43 @@ function renderDriveStop(i, settings) {
         for (linkid in i.links) {
             var thisLink = i.links[linkid]
             links += `<a href="${thisLink.url}">${thisLink.name}</a>`
-            if (linkid < i.links.length - 1) { links += ' | '}
+            if (linkid < i.links.length - 1) { links += ' | ' }
         }
     }
     mytype = 'Activity'
-            if (i.mandatory == false) {
-                mytype += ' (optional)'
+    if (i.mandatory == false) {
+        mytype += ' (optional)'
+    }
+    if (i.recommended == true) {
+        mytype += ' <strong>*recommended*<strong>'
+    }
+
+    var myDescription = ''
+    if ('description' in i) {
+        myDescription = `<p>${i.description}</p>`
+    }
+    if ('cost' in i) {
+        if (typeof (i.cost) == 'object') {
+            if ('adult' in i.cost) {
+                myDescription += `<p>Cost: ${i.cost.adult}${settings.currencySymbol} pp (${i.cost.info})</p>`
+            } else {
+                myDescription += `<p>Cost: ${i.cost.info}</p>`
             }
-            if (i.recommended == true) {
-                mytype += ' <strong>*recommended*<strong>'
-            }
-            
-            var myDescription = ''
-            if ('description' in i) {
-                myDescription = `<p>${i.description}</p>`
-            }
-            if ('cost' in i) {
-                if (typeof(i.cost) == 'object') {
-                    if ('adult' in i.cost) {
-                        myDescription += `<p>Cost: ${i.cost.adult}${settings.currencySymbol} pp (${i.cost.info})</p>`
-                    } else {
-                        myDescription += `<p>Cost: ${i.cost.info}</p>`
-                    }
-                } else if (i.cost == 0) {
-                    myDescription += `<p>Cost: free</p>`
-                } else {
-                    myDescription += `<p>Cost: ${i.cost}${settings.currencySymbol} pp</p>`
-                }
-            }
-            newItem =
-                `<tr class="itinerary-type-${i.type}">
+        } else if (i.cost == 0) {
+            myDescription += `<p>Cost: free</p>`
+        } else {
+            myDescription += `<p>Cost: ${i.cost}${settings.currencySymbol} pp</p>`
+        }
+    }
+    newItem =
+        `<tr class="itinerary-type-${i.type}">
                 <td class="driveline"><span class="drivewrapper"><span class="dot"></span><span class="line"></span></span></td>
                 <td class="iteminfo">
                 <h6>${title}</h6>${myDescription}`
-            if (links != "") {
-                newItem += `<p>Links: ${links}</p>`
-            }
-            newItem += `</td>
+    if (links != "") {
+        newItem += `<p>Links: ${links}</p>`
+    }
+    newItem += `</td>
                 </tr>`
     return newItem
 }
@@ -277,13 +277,13 @@ function generateItinerary(lg = "en", trip) {
     if (itinerary === 1) {
         return 1
     }
-    $('.triptitle').each(function() {
+    $('.triptitle').each(function () {
         $(this).html(itinerary.trip.title)
     })
-    $('.tripsubtitle').each(function() {
+    $('.tripsubtitle').each(function () {
         $(this).html(itinerary.trip.subtitle)
     })
-    $('.tripdescription').each(function() {
+    $('.tripdescription').each(function () {
         $(this).html(itinerary.trip.description.replaceAll("\n", "<br>"))
     })
     let settings = {}
@@ -302,9 +302,9 @@ function generateItinerary(lg = "en", trip) {
             cost = i.cost.adult
         }
         var duration = '?'
-        if ('duration' in i && typeof(i.duration) == 'object' && 'recommended' in i.duration) {
+        if ('duration' in i && typeof (i.duration) == 'object' && 'recommended' in i.duration) {
             duration = i.duration.recommended
-        } else if ('duration' in i && typeof(i.duration) == 'string') {
+        } else if ('duration' in i && typeof (i.duration) == 'string') {
             duration = i.duration
         }
         var title = i.name
@@ -315,7 +315,7 @@ function generateItinerary(lg = "en", trip) {
             for (linkid in i.links) {
                 var thisLink = i.links[linkid]
                 links += `<a href="${thisLink.url}">${thisLink.name}</a>`
-                if (linkid < i.links.length - 1) { links += ' | '}
+                if (linkid < i.links.length - 1) { links += ' | ' }
             }
         }
         var newItem = ''
@@ -338,7 +338,7 @@ function generateItinerary(lg = "en", trip) {
                 newItem += `<table class="driveStopsTable">
                     <tr><td class="driveline"><span class="drivewrapper"><span class="dot"></span><span class="line"></span></span></td><td colspan="2" class="iteminfo"><strong>${i.from.name}</strong></td></tr>`
                 for (ii in i.stops) {
-                        newItem += renderDriveStop(i.stops[ii], settings)
+                    newItem += renderDriveStop(i.stops[ii], settings)
                 }
                 newItem += `
                     <tr><td class="driveline driveline-last"><span class="dot"></span></td><td colspan="2" class="iteminfo"><strong>${i.to.name}</strong></td></tr>
@@ -376,8 +376,8 @@ function generateItinerary(lg = "en", trip) {
             rooms += '</ul><p>'
             description = `${i.locationdescription}<br><br>Rooms: ${rooms}<br>Standard: ${i.standard} | Total cost: ${i.booking.cost.amount} ${i.booking.cost.currency} | Check-In: ${i.checkin.from} - ${i.checkin.to} | Check-Out: by ${i.checkout.by}<br>Address: ${i.address}<br>
                 Links: ${links}`
-            var datefrom = `${weekday[i.checkin.day.getDay()]} ${str_pad(i.checkin.day.getDate())}/${str_pad(i.checkin.day.getMonth())}` 
-            var dateuntil = `${weekday[i.checkout.day.getDay()]} ${str_pad(i.checkout.day.getDate())}/${str_pad(i.checkout.day.getMonth())}` 
+            var datefrom = `${weekday[i.checkin.day.getDay()]} ${str_pad(i.checkin.day.getDate())}/${str_pad(i.checkin.day.getMonth())}`
+            var dateuntil = `${weekday[i.checkout.day.getDay()]} ${str_pad(i.checkout.day.getDate())}/${str_pad(i.checkout.day.getMonth())}`
             newItem =
                 `<tr class="itinerary-type-${i.type}"><td class="timeframe">${datefrom}<br>&rarr;<br>${dateuntil}</td><td class="iteminfo">
                 <h6>${title}</h6><p>${description}</p>
@@ -391,16 +391,16 @@ function generateItinerary(lg = "en", trip) {
                 <h6>${title}</h6><p>${description}</p>
                 </td><td></td>
                 </tr>`
-            
+
         }
         $('#itinerarylist').append(newItem)
     }
     let totalPetrolLiters = 0
     let petrolFactor = 1
     let totalPetrolCost = 0
-    settings.petrolFactor != undefined ? petrolFactor=settings.petrolFactor : null;
+    settings.petrolFactor != undefined ? petrolFactor = settings.petrolFactor : null;
     if (settings.litresPerKilometer && settings.petrolPerLitre) {
-        totalPetrolLiters = settings.litresPerKilometer/100*totalDistance * petrolFactor
+        totalPetrolLiters = settings.litresPerKilometer / 100 * totalDistance * petrolFactor
         totalPetrolCost = Math.round(totalPetrolLiters * settings.petrolPerLitre, 2)
     } else {
         console.log("If you specify `litresPerKilometer` and `petrolPerLitre` in the trip data, the system can calculate include the petrol cost estimation in the total cost estimation.")
@@ -410,21 +410,21 @@ function generateItinerary(lg = "en", trip) {
     let totalTripCost = Math.round(totalMandatoryCost + totalPetrolCost + totalAccommodationCost, 2)
     $('#tripSummary').append(
         `<h2>Cost Estimation<h2><table class="costSummary"><tbody>
-            <tr><th>Total Distance</td><td class="number">${totalDistance} `+ (settings.unitDistance != undefined ? ' ' + settings.unitDistance : '') + `</td></tr>` + 
-            (totalPetrolCost > 0 ? `<tr><th>Petrol cost</td><td class="number">
+            <tr><th>Total Distance</td><td class="number">${totalDistance} ` + (settings.unitDistance != undefined ? ' ' + settings.unitDistance : '') + `</td></tr>` +
+        (totalPetrolCost > 0 ? `<tr><th>Petrol cost</td><td class="number">
                 ${settings.petrolPerLitre}${settings.currencySymbol} per litre<br/>
                 ${settings.litresPerKilometer} litres per ${settings.unitDistance}<br/>
                 Factor ${settings.petrolFactor} -> ${totalPetrolLiters} l<br/>
-                <strong>Total petrol estimation: ${totalPetrolCost}${settings.currencySymbol}</strong></td></tr>`:``) + `
-            <tr><th>Accommodation Cost estimation</td><td class="number">${totalAccommodationCost} `+ (settings.currencySymbol != undefined ? ' ' + settings.currencySymbol : '') + `</td></tr>
-            <tr><th>Total Trip Cost estimation</td><td class="number">${totalTripCost} `+ (settings.currencySymbol != undefined ? ' ' + settings.currencySymbol : '') + `</td></tr>
+                <strong>Total petrol estimation: ${totalPetrolCost}${settings.currencySymbol}</strong></td></tr>` : ``) + `
+            <tr><th>Accommodation Cost estimation</td><td class="number">${totalAccommodationCost} ` + (settings.currencySymbol != undefined ? ' ' + settings.currencySymbol : '') + `</td></tr>
+            <tr><th>Total Trip Cost estimation</td><td class="number">${totalTripCost} ` + (settings.currencySymbol != undefined ? ' ' + settings.currencySymbol : '') + `</td></tr>
         </tbody></table>`
     )
     if ('costNotes' in itinerary.trip) {
         $('#tripSummary').append(`<p class="costNotes">${itinerary.trip.costNotes.replaceAll("\n", '<br>')}</p>`)
     }
     var accessoriesList = ""
-    for(item in itinerary.trip.accessories) {
+    for (item in itinerary.trip.accessories) {
         accessoriesList += `<li>${itinerary.trip.accessories[item].name}</li>`
     }
     if (accessoriesList != "") {
@@ -456,6 +456,9 @@ function generateItinerary(lg = "en", trip) {
         const filename = `itinerary-${trip}-${versionNumber}-${lg}.pdf`
         await page.emulateMediaType('print')
         await page.setContent($.html())
+        if (!fs.existsSync(output_dir)) {
+            fs.mkdirSync(output_dir, { recursive: true });
+        }
         await page.pdf({
             path: output_dir + filename, format: 'A4',
             displayHeaderFooter: true,
