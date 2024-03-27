@@ -1,0 +1,161 @@
+trip:
+  title: Coast-2-Coast in a Weekend with Translations
+  subtitle: 
+    translations:
+      default: Example Family Trip February 2-4
+      de_DE: Beispiel Familienreise 2.-4. Feb
+  description:
+    translations:
+      - language: default
+        text: |
+          Our family getaway offers a taste of the South Island's charm. Starting in Christchurch, we head north to Hanmer Springs for a dip in the renowned hot springs. On Saturday, we cross the Alps via Lewis Pass, enjoying scenic stops along Buller River and the rugged Northern West Coast. We explore the 'Pancake Rocks' before staying overnight at Lake Brunner. 
+    
+          Sunday takes us through Arthur's Pass, featuring alpine landscapes and a visit to Arthur's Pass Village. After exploring 'Castle Hill', we return to Christchurch, cherishing a weekend of natural wonders and family time.
+      - language: de_DE
+        text: |
+          Unser Familienausflug bietet einen Vorgeschmack auf den Charme der Südinsel. Von Christchurch aus fahren wir nach Norden nach Hanmer Springs, um in den berühmten heißen Quellen zu baden. Am Samstag überqueren wir die Alpen über den Lewis Pass und genießen malerische Stopps entlang des Buller River und der rauen nördlichen Westküste. Wir erkunden die „Pancake Rocks“, bevor wir am Lake Brunner übernachten.
+
+          Der Sonntag führt uns durch Arthur's Pass, mit alpinen Landschaften und einem Besuch im Arthur's Pass Village. Nachdem wir „Castle Hill“ erkundet haben, kehren wir nach Christchurch zurück und genießen ein Wochenende voller Naturwunder und Zeit mit der Familie.
+        textOriginalHash: <just example>
+        textTimestamp: <just example>
+        suggestion: <just example>
+        suggestionOriginalHash: <just example>
+        suggestionTimestamp: <just example>
+items:
+  - type: drive
+    transportMode: car
+    from: 
+      name: Christchurch
+    to:
+      name: Hanmer Springs
+    duration: 1:50
+    distance: 138km
+  - type: activity
+    name: Hot Pools
+    cost: 
+      adult: 40
+      info: can potentially be booked for less on bookme. $27 for seniors
+    mandatory: false
+  - type: sleep
+    mandatory: true
+    booking: 
+      status: confirmed
+      cancellation-until: 2024-02-01
+      cancellation-info: Free before February 2nd
+      provider: booking.com
+      cost: 
+        amount: 174.4
+        currency: NZD
+    payment:
+      status: open
+      due: 2024-04-04
+      information: pay at property
+    rooms:
+      - beds: 2
+        rooms: 2
+        type: cabin
+        description: single beds without sheets; communal/shared bathrooms and kitchen
+      - beds: 4
+        rooms: 1
+        type: cabin
+        description: bunk beds without sheets; communal/shared bathrooms and kitchen
+    name: Hanmer Springs Forest Camp Trust
+    address: 243 Jollies Pass Road, 7334 Hanmer Springs, New Zealand
+    standard: simple
+    locationdescription: Cabin park with shared facilities. Checkin after 17:00 incurs 2.5% credit card fee.
+    checkin:
+      day: 2024-04-02
+      from: 14:00
+      to: 17:00
+    checkout:
+      day: 2024-04-03
+      by: 10:00
+    links:
+      - name: Official Website
+        url: https://www.hanmerforestcamp.co.nz/
+      - name: Tripadvisor
+        url: https://www.tripadvisor.co.nz/Hotel_Review-g635990-d8409900-Reviews-Hanmer_Springs_Forest_Camp-Hanmer_Springs_Canterbury_Region_South_Island.html  
+  - type: drive
+    transportMode: car
+    from: 
+      name: Hanmer Springs
+    to:
+      name: Pancake Rocks
+    duration: 3:15
+    distance: 253km
+  - type: activity
+    name: Pancake Rocks
+    cost: 0
+    mandatory: false
+  - type: drive
+    transportMode: car
+    from: 
+      name: Pancake Rocks
+    to:
+      name: Moana
+    duration: 1:05
+    distance: 78
+  - type: sleep
+    mandatory: true
+    booking: 
+      status: confirmed
+      cancellation-until: 2024-01-20
+      cancellation-info: Free before January 21st, 12pm
+      provider: airbnb
+      cost: 
+        amount: 280.00
+        currency: NZD
+    payment:
+      status: paid
+      information: paid to airbnb already
+    rooms:
+      - beds: 8
+        rooms: 1
+        type: home
+        description: house with 3 bedrooms - 2 x queen beds, 2 x single beds
+    name: AirBnB near Moana
+    address: .....
+    standard: simple
+    locationdescription: Simple, private A-Frame holiday home in the forest
+    checkin:
+      day: 2024-02-03
+      from: 12:00
+      to: 22:00
+    checkout:
+      day: 2024-02-04
+      by: 11:00
+    links:
+      - name: AirBnB
+        url: https://www.airbnb.co.nz/rooms/1017845195987635293
+  - type: drive
+    transportMode: car
+    from: 
+      name: Moana
+    to:
+      name: Arthurs Pass
+    duration: 0:50
+    distance: 63km
+  - type: activity
+    name: Explore alpine village Arthurs Pass
+    cost: 0
+    mandatory: false
+  - type: drive
+    transportMode: car
+    from: 
+      name: Arthurs Pass
+    to:
+      name: Castle Hill
+    duration: 0:45
+    distance: 51km
+  - type: activity
+    name: Explore Castle Hill Rock Formations
+    cost: 0
+    mandatory: false
+  - type: drive
+    transportMode: car
+    from: 
+      name: Castle Hill
+    to:
+      name: Christchurch
+    duration: 1:20
+    distance: 102km

@@ -56,7 +56,7 @@ function readVersionNumber(trip) {
     return fs.readFileSync(versionFileFullPath, 'utf8').trim()
 }
 
-function readItineraryFromYaml(trip) {
+function readItineraryFromYaml(trip, lg) {
     // Get document, or throw exception on error
     try {
         var itinerary = {}
@@ -87,12 +87,53 @@ function readItineraryFromYaml(trip) {
             itinerary['days'] = doc['days']
         }
         if (doc.hasOwnProperty("trip")) {
-            itinerary['trip'] = doc['trip']
+            itinerary['trip'] = changeYamlLanguage(doc['trip'], lg)
         }
         return itinerary
     } catch (e) {
         console.log(e)
     }
+}
+
+function changeYamlLanguage(yamlObject, destLg) {
+    if (typeof yamlObject === 'object') {
+        for (var key in yamlObject) {
+            if (typeof yamlObject[key] === 'object' && !("translations" in yamlObject[key])) {
+                changeYamlLanguage(yamlObject[key], destLg)
+            }
+            else if (typeof yamlObject[key] === 'object' && "translations" in yamlObject[key]) {
+                if (Array.isArray(yamlObject[key]["translations"])) { // Type 2
+                    // search for the right language, or select default
+                    var translations = yamlObject[key]["translations"]
+                    var lang_id = null
+                    var default_id = null
+                    for (var i = 0; i < translations.length; i++) {
+                        if ("language" in translations[i] && translations[i]['language'] == destLg) {
+                            lang_id = i
+                            break
+                        }
+                        if ("language" in translations[i] && translations[i]['language'] == "default") {
+                            default_id = i
+                        }
+                    }
+                    (lang_id === null) ? lang_id = default_id : null;
+                    (default_id === null) ? lang_id = 0 : null;
+                    if ("text" in translations[lang_id]) {
+                        yamlObject[key] = translations[lang_id]["text"]
+                    } else if ("suggestion" in translations[lang_id]) {
+                        yamlObject[key] = translations[lang_id]["suggestion"]
+                    }
+                } else { // Type 1
+                    if (destLg in yamlObject[key]["translations"]) {
+                        yamlObject[key] = yamlObject[key]["translations"][destLg]
+                    } else {
+                        yamlObject[key] = yamlObject[key]["translations"]["default"]
+                    }
+                }
+            }
+        }
+    }
+    return yamlObject
 }
 
 function selectTechLogo(tech) {
@@ -256,7 +297,7 @@ function generateItinerary(lg = "en", trip) {
         return 1
     }
     const versionNumber = readVersionNumber(trip)
-    if (lg !== 'de') {
+    if (lg.length > 5 || lg.length < 2) {
         lg = 'en'
     }
     var now = new Date()
@@ -273,7 +314,7 @@ function generateItinerary(lg = "en", trip) {
         $(this).html(translations[$(this).data('translate')][lg])
     })
 
-    const itinerary = readItineraryFromYaml(trip)
+    const itinerary = readItineraryFromYaml(trip, lg)
     if (itinerary === 1) {
         return 1
     }
