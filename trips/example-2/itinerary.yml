@@ -4,12 +4,6 @@ trip:
     translations:
       default: Example Family Trip February 2-4
       de_DE: Beispiel Familienreise 2.-4. Feb
-  descriptionx: |
-    
-  description2:
-    translations:
-      default: Hi everybody
-      th_TH: abc everybody
   description:
     translations:
       - language: default
