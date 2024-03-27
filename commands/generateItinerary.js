@@ -98,7 +98,7 @@ function readItineraryFromYaml(trip, lg) {
 function changeYamlLanguage(yamlObject, destLg) {
     if (typeof yamlObject === 'object') {
         for (var key in yamlObject) {
-            if (typeof yamlObject[key] === 'object' && ! "translations" in yamlObject[key]) {
+            if (typeof yamlObject[key] === 'object' && !("translations" in yamlObject[key])) {
                 changeYamlLanguage(yamlObject[key], destLg)
             }
             else if (typeof yamlObject[key] === 'object' && "translations" in yamlObject[key]) {
