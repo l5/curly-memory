@@ -5,6 +5,8 @@ trip:
     Our family getaway offers a taste of the South Island's charm. Starting in Christchurch, we head north to Hanmer Springs for a dip in the renowned hot springs. On Saturday, we cross the Alps via Lewis Pass, enjoying scenic stops along Buller River and the rugged Northern West Coast. We explore the 'Pancake Rocks' before staying overnight at Lake Brunner. 
     
     Sunday takes us through Arthur's Pass, featuring alpine landscapes and a visit to Arthur's Pass Village. After exploring 'Castle Hill', we return to Christchurch, cherishing a weekend of natural wonders and family time.
+  description-de_DE: |
+    blabla
 items:
   - type: drive
     transportMode: car

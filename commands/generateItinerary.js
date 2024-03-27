@@ -56,7 +56,7 @@ function readVersionNumber(trip) {
     return fs.readFileSync(versionFileFullPath, 'utf8').trim()
 }
 
-function readItineraryFromYaml(trip) {
+function readItineraryFromYaml(trip, lg) {
     // Get document, or throw exception on error
     try {
         var itinerary = {}
@@ -87,12 +87,28 @@ function readItineraryFromYaml(trip) {
             itinerary['days'] = doc['days']
         }
         if (doc.hasOwnProperty("trip")) {
-            itinerary['trip'] = doc['trip']
+            itinerary['trip'] = changeYamlLanguage(doc['trip'], lg)
         }
         return itinerary
     } catch (e) {
         console.log(e)
     }
+}
+
+function changeYamlLanguage(yamlObject, destLg) {
+    if (typeof yamlObject === 'object') {
+        for (var keys in yamlObject) {
+            if (typeof yamlObject[keys] === 'object') {
+                changeYamlLanguage(yamlObj[keys], destLg)
+            } else {
+                // check if lg entry exists
+                if (keys + "-" + destLg in yamlObject) {
+                    yamlObject[keys] = yamlObject[keys + "-" + destLg]
+                }
+            }
+        }
+    }
+    return yamlObject
 }
 
 function selectTechLogo(tech) {
@@ -256,7 +272,7 @@ function generateItinerary(lg = "en", trip) {
         return 1
     }
     const versionNumber = readVersionNumber(trip)
-    if (lg !== 'de') {
+    if (lg.length > 5 || lg.length < 2) {
         lg = 'en'
     }
     var now = new Date()
@@ -273,7 +289,7 @@ function generateItinerary(lg = "en", trip) {
         $(this).html(translations[$(this).data('translate')][lg])
     })
 
-    const itinerary = readItineraryFromYaml(trip)
+    const itinerary = readItineraryFromYaml(trip, lg)
     if (itinerary === 1) {
         return 1
     }
