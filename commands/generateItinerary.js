@@ -118,9 +118,9 @@ function changeYamlLanguage(yamlObject, destLg) {
                     }
                     (lang_id === null) ? lang_id = default_id : null;
                     (default_id === null) ? lang_id = 0 : null;
-                    if ("text" in translations[i]) {
+                    if ("text" in translations[lang_id]) {
                         yamlObject[key] = translations[lang_id]["text"]
-                    } else if ("suggestion" in translations[i]) {
+                    } else if ("suggestion" in translations[lang_id]) {
                         yamlObject[key] = translations[lang_id]["suggestion"]
                     }
                 } else { // Type 1
