@@ -109,7 +109,6 @@ trip:
       fr_FR: Profitez des magnifiques paysages autour d'Aoraki / Mt Cook! Départ de Queenstown.
 ```
 
-
 ## System Requirements
 
-* nodejs `v21.4.0`
+* Node.js `v21.4.0`
