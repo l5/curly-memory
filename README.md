@@ -34,6 +34,52 @@ With the `-l` switch, the language of the itinerary can be chosen: `-l de_DE`, f
 as well. In fact, the parser will check for every value in the yaml file, if a language specific key exists in the yaml file, and replace it in memory before 
 generating the itinerary.
 
+## Format
+
+The itinerary data file is yaml format, and consists of three main sections:
+
+```
+trip
+days
+items
+```
+
+### Trip section
+
+```
+trip:
+  title: My trip title
+  subtitle: My trip subtitle
+  description: |
+    This is the description
+  costNotes: |
+    We recommend to plan $500 for extra expenses per day. All listed hotel cost include GST. In New Zealand, it is not required to give tips.
+  accessories:
+    - name: Walking shoes
+    - name: Rainwear
+  settings:
+    currency: <USD | EUR | AUD | NZD | ...>
+    unitDistance: km
+    unitDriveTime: hours
+    petrolPerLitre: 3
+    litresPerKilometer: 12
+    petrolFactor: 1.3
+```
+
+* **title**: Title of the trip (mandatory)
+* **subtitle**: Subtitle of the trip (mandatory)
+* **description**: Description of the trip (mandatory)
+* **costNotes**: Notes about costing (optional)
+* **accessories**: List of accessories that should be taken on the trip
+  * **name**: Name of the accessory
+* **settings**: General settings used for calculations and display
+  * **currencySymbol**: Specifies which symbol is used for currencies as default
+  * **unitDistance**: Specifies the unit used for distances
+  * **unitDriveTime**: Specifies the unit used for driving times
+  * **petrolPerLitre**: Specifies the estimated petrol price per litre
+  * **litresPerKilometer**: Specifies how many litres are used per hundred kilometers
+  * **petrolFactor**: Specifies a safety factor for kilometer/fuel calculations
+
 ## Multilingual / Translations feature
 
 There are two options to hold multilingual data:
@@ -43,6 +89,47 @@ This is an easy way and keeps the data file nice and tidy. However, it may get m
 activities. Changes would need to be manually synchronized between the different language versions.
 
 2. Integrating all languages into one data file with the optional translation yaml structure.
+
+### Cost Yaml Structure
+
+```
+# Option 1: Number
+cost: 20
+# will be currency formatted 
+
+# Option 2: String
+cost: Cost $35 pp for tour + $25 for tasting
+or
+cost: $25pp
+# will be printed as is
+
+# Option 3: in case of a derivation from standard currency:
+cost: 
+  amount: 125
+  currency: NZD
+
+
+# Option 4:
+# May be used if different prices apply
+cost:
+  info: |
+    purchase ticket on site for full price; discounted, time-bound tickets may be 
+    available via voucher platform
+  prices: 
+    - name: adult
+      price: 15
+    - name: child
+      price: 5
+      ageto: 14
+    - name: child
+      price: 0
+      ageto: 2
+      info: kids under 3 are free with accompanying adult.
+
+# Zero cost
+cost: 0
+
+```
 
 ### Integrated Translation Yaml Structure
 #### Usage

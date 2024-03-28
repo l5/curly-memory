@@ -67,7 +67,7 @@ function readItineraryFromYaml(trip, lg) {
         }
         const doc = yaml.load(fs.readFileSync(yamlFileFullPath, 'utf8'))
         if (doc.hasOwnProperty("items")) {
-            const items = doc['items']
+            const items = changeYamlLanguage(doc['items'], lg)
             /*const sortedProjects = projects.sort(function (p1, p2) {
                 let d1 = p1.yearfrom.toString()
                 if (p1.monthfrom.toString().length < 2) { d1 += "0" + p1.monthfrom.toString() }
@@ -98,6 +98,7 @@ function readItineraryFromYaml(trip, lg) {
 function changeYamlLanguage(yamlObject, destLg) {
     if (typeof yamlObject === 'object') {
         for (var key in yamlObject) {
+            if (yamlObject[key] === null) continue
             if (typeof yamlObject[key] === 'object' && !("translations" in yamlObject[key])) {
                 changeYamlLanguage(yamlObject[key], destLg)
             }
@@ -124,6 +125,7 @@ function changeYamlLanguage(yamlObject, destLg) {
                         yamlObject[key] = translations[lang_id]["suggestion"]
                     }
                 } else { // Type 1
+                    if (yamlObject[key]["translations"] === null) continue
                     if (destLg in yamlObject[key]["translations"]) {
                         yamlObject[key] = yamlObject[key]["translations"][destLg]
                     } else {
@@ -193,7 +195,30 @@ function renderMenu(food) {
 function str_pad(n) {
     return String("00" + n).slice(-2);
 }
-function renderActivity(i, mytype, description, links, duration, settings, cost) {
+function renderCost(costingBlock, settings, priceFormat) {
+    var myDescription = ''
+    if (typeof (costingBlock) == 'object') {
+        if ('info' in costingBlock) {
+            myDescription += `${costingBlock.info}`
+        }
+        if ('prices' in costingBlock) { 
+            myDescription += '<ul>'
+            for (var i = 0; i < costingBlock.prices.length; i++) {
+                myCost = renderCost(costingBlock.prices[i].cost)
+                myDescription += `<li>${costingBlock.prices[i].name}: ${myCost}</li>`
+            }
+            myDescription += '</ul>'
+        }
+    } else if (costingBlock == 0) {
+        myDescription += `free`
+    } else if (isNaN(costingBlock)) {
+        myDescription += `${costingBlock}`
+    } else {
+        myDescription += `${priceFormat.format(costingBlock)}`
+    }
+    return myDescription
+}
+function renderActivity(i, mytype, description, links, duration, settings, cost, priceFormat) {
     newItem = ''
     var title = i.name
     mytype = 'Activity'
@@ -209,17 +234,7 @@ function renderActivity(i, mytype, description, links, duration, settings, cost)
         myDescription = `<p>${i.description}</p>`
     }
     if ('cost' in i) {
-        if (typeof (i.cost) == 'object') {
-            if ('adult' in i.cost) {
-                myDescription += `<p>Cost: ${i.cost.adult}${settings.currencySymbol} pp (${i.cost.info})</p>`
-            } else {
-                myDescription += `<p>Cost: ${i.cost.info}</p>`
-            }
-        } else if (i.cost == 0) {
-            myDescription += `<p>Cost: free</p>`
-        } else {
-            myDescription += `<p>Cost: ${i.cost}${settings.currencySymbol} pp</p>`
-        }
+        myDescription += `<p>Cost: ${renderCost(i.cost, settings, priceFormat)}</p>`
     }
     newItem =
         `<tr class="itinerary-type-${i.type}">
@@ -233,7 +248,7 @@ function renderActivity(i, mytype, description, links, duration, settings, cost)
     return newItem
 }
 
-function renderDriveStop(i, settings) {
+function renderDriveStop(i, settings, priceFormat) {
     newItem = ''
     var title = i.name
     var links = ""
@@ -257,17 +272,7 @@ function renderDriveStop(i, settings) {
         myDescription = `<p>${i.description}</p>`
     }
     if ('cost' in i) {
-        if (typeof (i.cost) == 'object') {
-            if ('adult' in i.cost) {
-                myDescription += `<p>Cost: ${i.cost.adult}${settings.currencySymbol} pp (${i.cost.info})</p>`
-            } else {
-                myDescription += `<p>Cost: ${i.cost.info}</p>`
-            }
-        } else if (i.cost == 0) {
-            myDescription += `<p>Cost: free</p>`
-        } else {
-            myDescription += `<p>Cost: ${i.cost}${settings.currencySymbol} pp</p>`
-        }
+        myDescription += `<p>Cost: ${renderCost(i.cost, settings, priceFormat)}</p>`
     }
     newItem =
         `<tr class="itinerary-type-${i.type}">
@@ -287,6 +292,7 @@ function generateItinerary(lg = "en", trip) {
     var totalTravelTime = 0
     var totalMandatoryCost = 0
     var totalAccommodationCost = 0
+
     if (trip == "" || trip === undefined) {
         console.log("Please specify trip name (should be a subdirectory of 'trips')")
         return 1
@@ -330,6 +336,13 @@ function generateItinerary(lg = "en", trip) {
     let settings = {}
     if (itinerary.trip.settings) {
         settings = itinerary.trip.settings
+    }
+    var priceFormat = Intl.NumberFormat(lg.replace('_', '-'))
+    if (settings.currency) {
+        priceFormat = Intl.NumberFormat(lg.replace('_', '-'), { // en-DE
+            style: 'currency',
+            currency: settings.currency // USD / NZD / EUR / ...
+        })
     }
     $('#itinerarylist').html('')
 
@@ -379,7 +392,7 @@ function generateItinerary(lg = "en", trip) {
                 newItem += `<table class="driveStopsTable">
                     <tr><td class="driveline"><span class="drivewrapper"><span class="dot"></span><span class="line"></span></span></td><td colspan="2" class="iteminfo"><strong>${i.from.name}</strong></td></tr>`
                 for (ii in i.stops) {
-                    newItem += renderDriveStop(i.stops[ii], settings)
+                    newItem += renderDriveStop(i.stops[ii], settings, priceFormat)
                 }
                 newItem += `
                     <tr><td class="driveline driveline-last"><span class="dot"></span></td><td colspan="2" class="iteminfo"><strong>${i.to.name}</strong></td></tr>
@@ -389,7 +402,7 @@ function generateItinerary(lg = "en", trip) {
                 </tr>`
         }
         else if (i.type == 'activity') {
-            newItem += renderActivity(i, mytype, description, links, duration, settings, cost)
+            newItem += renderActivity(i, mytype, description, links, duration, settings, cost, priceFormat)
         } else if (i.type == 'food') {
             mytype = 'Snack'
             if ('food' in i) {
@@ -449,16 +462,17 @@ function generateItinerary(lg = "en", trip) {
     totalMandatoryCost = Math.round(totalMandatoryCost, 2)
     totalAccommodationCost = Math.round(totalAccommodationCost, 2)
     let totalTripCost = Math.round(totalMandatoryCost + totalPetrolCost + totalAccommodationCost, 2)
+    let totalTripCostStr = priceFormat.format(totalTripCost)
     $('#tripSummary').append(
         `<h2>Cost Estimation<h2><table class="costSummary"><tbody>
             <tr><th>Total Distance</td><td class="number">${totalDistance} ` + (settings.unitDistance != undefined ? ' ' + settings.unitDistance : '') + `</td></tr>` +
         (totalPetrolCost > 0 ? `<tr><th>Petrol cost</td><td class="number">
-                ${settings.petrolPerLitre}${settings.currencySymbol} per litre<br/>
+                ${priceFormat.format(settings.petrolPerLitre)} per litre<br/>
                 ${settings.litresPerKilometer} litres per ${settings.unitDistance}<br/>
                 Factor ${settings.petrolFactor} -> ${totalPetrolLiters} l<br/>
-                <strong>Total petrol estimation: ${totalPetrolCost}${settings.currencySymbol}</strong></td></tr>` : ``) + `
-            <tr><th>Accommodation Cost estimation</td><td class="number">${totalAccommodationCost} ` + (settings.currencySymbol != undefined ? ' ' + settings.currencySymbol : '') + `</td></tr>
-            <tr><th>Total Trip Cost estimation</td><td class="number">${totalTripCost} ` + (settings.currencySymbol != undefined ? ' ' + settings.currencySymbol : '') + `</td></tr>
+                <strong>Total petrol estimation: ${priceFormat.format(totalPetrolCost)}</strong></td></tr>` : ``) + `
+            <tr><th>Accommodation Cost estimation</td><td class="number">${priceFormat.format(totalAccommodationCost)}</td></tr>
+            <tr><th>Total Trip Cost estimation</td><td class="number">${priceFormat.format(totalTripCost)}</td></tr>
         </tbody></table>`
     )
     if ('costNotes' in itinerary.trip) {
