@@ -16,7 +16,8 @@ const weekday = {
 const translations = {
     "itinerary": {
         en: "Itinerary",
-        de: "Itinerary"
+        de: "Itinerary",
+        th_TH: "รายละเอียดการเดินทาง"
     },
     "excerpt": {
         en: "excerpt",
@@ -24,15 +25,18 @@ const translations = {
     },
     "generated": {
         en: "Generated",
-        de: "Generiert"
+        de: "Generiert",
+        th_TH: "สร้างขึ้น"
     },
     "totalpages": {
         en: "Total number of pages",
-        de: "Seitenanzahl"
+        de: "Seitenanzahl",
+        th_TH: "จำนวนหน้าทั้งหมด"
     },
     "version": {
         en: "Version",
-        de: "Version"
+        de: "Version",
+        th_TH: "รุ่น"
     },
     "download": {
         en: "Download latest version",
