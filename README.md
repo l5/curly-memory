@@ -30,8 +30,8 @@ a simple formatted PDF and/or HTML for easy distribution.
 
 ## Options
 
-With the `-l` switch, the language of the itinerary can be chosen: `-l de_DE`, for example. This requires the yaml itinerary file to contain language specific entries 
-as well. In fact, the parser will check for every value in the yaml file, if a language specific key exists in the yaml file, and replace it in memory before 
+With the `-l` switch, the language of the itinerary can be chosen: `-l de_DE`, for example. This requires the yaml itinerary file to contain language-specific entries 
+as well. In fact, the parser will check for every value in the yaml file, if a language-specific key exists in the yaml file, and replace it in memory before 
 generating the itinerary.
 
 ## Format
@@ -44,6 +44,7 @@ trip
 days
 items
 ```
+
 ### Metadata section
 
 ```yaml
@@ -103,6 +104,7 @@ activities. Changes would need to be manually synchronized between the different
 
 2. Integrating all languages into one data file with the optional translation yaml structure.
 
+
 ### Cost Yaml Structure
 
 ```yaml
@@ -141,8 +143,8 @@ cost:
 
 # Zero cost
 cost: 0
-
 ```
+
 
 ### Integrated Translation Yaml Structure
 #### Usage
