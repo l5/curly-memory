@@ -36,17 +36,30 @@ generating the itinerary.
 
 ## Format
 
-The itinerary data file is yaml format, and consists of three main sections:
+The itinerary data file is yaml format, and consists of four main sections:
 
-```
+```yaml
+metadata
 trip
 days
 items
 ```
+### Metadata section
+
+```yaml
+metadata:
+  availableTranslations:
+    - name: English
+      code: default
+    - name: Thai
+      code: th_TH
+```
+
+The `metadata` / `availableTranslations` section lists languages a user can choose from for the itinerary to be displayed in.
 
 ### Trip section
 
-```
+```yaml
 trip:
   title: My trip title
   subtitle: My trip subtitle
@@ -92,7 +105,7 @@ activities. Changes would need to be manually synchronized between the different
 
 ### Cost Yaml Structure
 
-```
+```yaml
 # Option 1: Number
 cost: 20
 # will be currency formatted 
@@ -144,13 +157,13 @@ cost: 0
 
 #### Examples
 ##### No Translation:
-```
+```yaml
 trip:
   title: South Island Round Trip, 5 days
 ```
 
 ##### Simple, manually translated version:
-```
+```yaml
 trip:
   title:
     translations:
@@ -162,7 +175,7 @@ trip:
 The first language is the default value in case the translation for the requested language is not available.
 
 ##### Complex translation version:
-```
+```yaml
 trip:
   title:
     translations:
@@ -186,7 +199,7 @@ All options may be used in parallel in the same file. Parsers are supposed to va
 
 Example: A tour operator decides to translate the description of a trip into several languages, but not the title.
 
-```
+```yaml
 trip:
   title: Aoraki / Mt Cook Day Trip
   description:
