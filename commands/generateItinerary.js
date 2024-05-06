@@ -230,7 +230,7 @@ function renderActivity(i, mytype, description, links, duration, settings, cost,
         mytype += ' (optional)'
     }
     if (i.recommended == true) {
-        mytype += ' <strong>*recommended*<strong>'
+        mytype += ' <strong>*recommended*</strong>'
     }
 
     var myDescription = ''
@@ -268,7 +268,7 @@ function renderDriveStop(i, settings, priceFormat) {
         mytype += ' (optional)'
     }
     if (i.recommended == true) {
-        mytype += ' <strong>*recommended*<strong>'
+        mytype += ' <strong>*recommended*</strong>'
     }
 
     var myDescription = ''
