@@ -201,7 +201,7 @@ function str_pad(n) {
 }
 function renderCost(costingBlock, settings, priceFormat) {
     var myDescription = ''
-    if (typeof (costingBlock) == 'object') {
+    if (costingBlock && typeof costingBlock === 'object') {
         if ('info' in costingBlock) {
             myDescription += `${costingBlock.info}`
         }
