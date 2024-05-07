@@ -1,10 +1,10 @@
 trip:
-  title: Coast-2-Coast in a Weekend
-  subtitle: Example Family Trip February 2-4
+  title: Example Coast-2-Coast in a Weekend (1)
+  subtitle: Example Trip February 2-4
   description: |
-    Our family getaway offers a taste of the South Island's charm. Starting in Christchurch, we head north to Hanmer Springs for a dip in the renowned hot springs. On Saturday, we cross the Alps via Lewis Pass, enjoying scenic stops along Buller River and the rugged Northern West Coast. We explore the 'Pancake Rocks' before staying overnight at Lake Brunner. 
+    Our getaway offers a taste of the South Island's charm. Starting in Christchurch, we head north to Hanmer Springs for a dip in the renowned hot springs. On Saturday, we cross the Alps via Lewis Pass, enjoying scenic stops along Buller River and the rugged Northern West Coast. We explore the 'Pancake Rocks' before staying overnight at Lake Brunner. 
     
-    Sunday takes us through Arthur's Pass, featuring alpine landscapes and a visit to Arthur's Pass Village. After exploring 'Castle Hill', we return to Christchurch, cherishing a weekend of natural wonders and family time.
+    Sunday takes us through Arthur's Pass, featuring alpine landscapes and a visit to Arthur's Pass Village. After exploring 'Castle Hill', we return to Christchurch, cherishing a weekend of natural wonders and relax time.
 items:
   - type: drive
     transportMode: car
@@ -13,12 +13,12 @@ items:
     to:
       name: Hanmer Springs
     duration: 1:50
-    distance: 138km
+    distance: 138
   - type: activity
     name: Hot Pools
     cost: 
       adult: 40
-      info: can potentially be booked for less on bookme. $27 for seniors
+      info: Can potentially be booked for less on bookme.
     mandatory: false
   - type: sleep
     mandatory: true
@@ -66,7 +66,7 @@ items:
     to:
       name: Pancake Rocks
     duration: 3:15
-    distance: 253km
+    distance: 253
   - type: activity
     name: Pancake Rocks
     cost: 0
@@ -118,7 +118,7 @@ items:
     to:
       name: Arthurs Pass
     duration: 0:50
-    distance: 63km
+    distance: 63
   - type: activity
     name: Explore alpine village Arthurs Pass
     cost: 0
@@ -130,7 +130,7 @@ items:
     to:
       name: Castle Hill
     duration: 0:45
-    distance: 51km
+    distance: 51
   - type: activity
     name: Explore Castle Hill Rock Formations
     cost: 0
@@ -142,4 +142,4 @@ items:
     to:
       name: Christchurch
     duration: 1:20
-    distance: 102km
+    distance: 102

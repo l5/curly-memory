@@ -1,26 +1,34 @@
+metadata:
+  availableTranslations:
+    - name: English
+      code: default
+    - name: Deutsch
+      code: de_DE
 trip:
-  title: Coast-2-Coast in a Weekend with Translations
+  title: 
+    translations:
+      default: Coast-2-Coast in a Weekend with Translations (2)
+      de_DE: Ost und Westküste an einem Wochenende (2)
   subtitle: 
     translations:
-      default: Example Family Trip February 2-4
-      de_DE: Beispiel Familienreise 2.-4. Feb
+      default: Example Trip February 2-4
+      de_DE: Beispiel-Reise 2.-4. Feb
   description:
     translations:
       - language: default
         text: |
-          Our family getaway offers a taste of the South Island's charm. Starting in Christchurch, we head north to Hanmer Springs for a dip in the renowned hot springs. On Saturday, we cross the Alps via Lewis Pass, enjoying scenic stops along Buller River and the rugged Northern West Coast. We explore the 'Pancake Rocks' before staying overnight at Lake Brunner. 
+          Our getaway offers a taste of the South Island's charm. Starting in Christchurch, we head north to Hanmer Springs for a dip in the renowned hot springs. On Saturday, we cross the Alps via Lewis Pass, enjoying scenic stops along Buller River and the rugged Northern West Coast. We explore the 'Pancake Rocks' before staying overnight at Lake Brunner. 
     
-          Sunday takes us through Arthur's Pass, featuring alpine landscapes and a visit to Arthur's Pass Village. After exploring 'Castle Hill', we return to Christchurch, cherishing a weekend of natural wonders and family time.
+          Sunday takes us through Arthur's Pass, featuring alpine landscapes and a visit to Arthur's Pass Village. After exploring 'Castle Hill', we return to Christchurch, cherishing a weekend of natural wonders and relax time.
       - language: de_DE
         text: |
-          Unser Familienausflug bietet einen Vorgeschmack auf den Charme der Südinsel. Von Christchurch aus fahren wir nach Norden nach Hanmer Springs, um in den berühmten heißen Quellen zu baden. Am Samstag überqueren wir die Alpen über den Lewis Pass und genießen malerische Stopps entlang des Buller River und der rauen nördlichen Westküste. Wir erkunden die „Pancake Rocks“, bevor wir am Lake Brunner übernachten.
+          Unser Ausflug bietet einen Vorgeschmack auf den Charme der Südinsel. Von Christchurch aus fahren wir nach Norden nach Hanmer Springs, um in den berühmten heißen Quellen zu baden. Am Samstag überqueren wir die Alpen über den Lewis Pass und genießen malerische Stopps entlang des Buller River und der rauen nördlichen Westküste. Wir erkunden die „Pancake Rocks“, bevor wir am Lake Brunner übernachten.
 
-          Der Sonntag führt uns durch Arthur's Pass, mit alpinen Landschaften und einem Besuch im Arthur's Pass Village. Nachdem wir „Castle Hill“ erkundet haben, kehren wir nach Christchurch zurück und genießen ein Wochenende voller Naturwunder und Zeit mit der Familie.
-        textOriginalHash: <just example>
-        textTimestamp: <just example>
-        suggestion: <just example>
-        suggestionOriginalHash: <just example>
-        suggestionTimestamp: <just example>
+          Der Sonntag führt uns durch Arthur's Pass, mit alpinen Landschaften und einem Besuch im Arthur's Pass Village. Nachdem wir „Castle Hill“ erkundet haben, kehren wir nach Christchurch zurück und genießen ein Wochenende voller Naturwunder und Zeit für uns selbst.
+  settings: 
+    currency: NZD
+    unitDistance: km
+    unitDriveTime: hours
 items:
   - type: drive
     transportMode: car
@@ -29,12 +37,18 @@ items:
     to:
       name: Hanmer Springs
     duration: 1:50
-    distance: 138km
+    distance: 138
   - type: activity
-    name: Hot Pools
+    name: 
+      translations:
+        default: Hot Pools
+        de_DE: Kurbad
     cost: 
       adult: 40
-      info: can potentially be booked for less on bookme. $27 for seniors
+      info: 
+        translations:
+          default: Can potentially be booked for less on bookme.
+          de_DE: Kann ggf. via bookme günstig vorab gebucht werden.
     mandatory: false
   - type: sleep
     mandatory: true
@@ -62,7 +76,10 @@ items:
     name: Hanmer Springs Forest Camp Trust
     address: 243 Jollies Pass Road, 7334 Hanmer Springs, New Zealand
     standard: simple
-    locationdescription: Cabin park with shared facilities. Checkin after 17:00 incurs 2.5% credit card fee.
+    locationdescription:
+      translations:
+        default: Cabin park with shared facilities. Checkin after 17:00 incurs 2.5% credit card fee.
+        de_DE: Camp mit einfachen Hütten und Gemeinschaftseinrichtungen. Sollte der Check-In nach 17h erfolgen, fallen 2,5% Kartenzahlungsgebühr an.
     checkin:
       day: 2024-04-02
       from: 14:00
@@ -82,7 +99,7 @@ items:
     to:
       name: Pancake Rocks
     duration: 3:15
-    distance: 253km
+    distance: 253
   - type: activity
     name: Pancake Rocks
     cost: 0
@@ -113,10 +130,16 @@ items:
         rooms: 1
         type: home
         description: house with 3 bedrooms - 2 x queen beds, 2 x single beds
-    name: AirBnB near Moana
+    name: 
+      translations:
+        default: AirBnB near Moana
+        de_DE: AirBnB in der Nähe von Moana
     address: .....
     standard: simple
-    locationdescription: Simple, private A-Frame holiday home in the forest
+    locationdescription: 
+      translations:
+        default: Simple, private A-Frame holiday home in the forest
+        de_DE: Einfaches A-Frame Ferienhaus umgeben von westküsten-typischem Regenwald
     checkin:
       day: 2024-02-03
       from: 12:00
@@ -134,9 +157,12 @@ items:
     to:
       name: Arthurs Pass
     duration: 0:50
-    distance: 63km
+    distance: 63
   - type: activity
-    name: Explore alpine village Arthurs Pass
+    name: 
+      translations:
+        default: Explore alpine village Arthurs Pass
+        de_DE: Erkundung des alpinen Ortes "Arthurs Pass"
     cost: 0
     mandatory: false
   - type: drive
@@ -146,9 +172,12 @@ items:
     to:
       name: Castle Hill
     duration: 0:45
-    distance: 51km
+    distance: 51
   - type: activity
-    name: Explore Castle Hill Rock Formations
+    name: 
+      translations:
+        default: Explore Castle Hill Rock Formations
+        de_DE: Erkundung der einzigartigen Fels-Formationen in Castle Hill
     cost: 0
     mandatory: false
   - type: drive
@@ -158,4 +187,4 @@ items:
     to:
       name: Christchurch
     duration: 1:20
-    distance: 102km
+    distance: 102
