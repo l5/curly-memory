@@ -2,6 +2,9 @@ const yaml = require('js-yaml')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const cheerio = require('cheerio')
+const { YamlTranslate } = require('yamltranslate')
+
+const yamltranslate = new YamlTranslate()
 
 const output_dir = 'pub/'
 const weekday = {
@@ -71,7 +74,7 @@ function readItineraryFromYaml(trip, lg) {
         }
         const doc = yaml.load(fs.readFileSync(yamlFileFullPath, 'utf8'))
         if (doc.hasOwnProperty("items")) {
-            const items = changeYamlLanguage(doc['items'], lg)
+            const items = yamltranslate.getYamlContent(doc['items'], lg)
             /*const sortedProjects = projects.sort(function (p1, p2) {
                 let d1 = p1.yearfrom.toString()
                 if (p1.monthfrom.toString().length < 2) { d1 += "0" + p1.monthfrom.toString() }
@@ -91,94 +94,12 @@ function readItineraryFromYaml(trip, lg) {
             itinerary['days'] = doc['days']
         }
         if (doc.hasOwnProperty("trip")) {
-            itinerary['trip'] = changeYamlLanguage(doc['trip'], lg)
+            itinerary['trip'] = yamltranslate.getYamlContent(doc['trip'], lg)
         }
         return itinerary
     } catch (e) {
         console.log(e)
     }
-}
-
-function changeYamlLanguage(yamlObject, destLg) {
-    if (typeof yamlObject === 'object') {
-        for (var key in yamlObject) {
-            if (yamlObject[key] === null) continue
-            if (typeof yamlObject[key] === 'object' && !("translations" in yamlObject[key])) {
-                changeYamlLanguage(yamlObject[key], destLg)
-            }
-            else if (typeof yamlObject[key] === 'object' && "translations" in yamlObject[key]) {
-                if (Array.isArray(yamlObject[key]["translations"])) { // Type 2
-                    // search for the right language, or select default
-                    var translations = yamlObject[key]["translations"]
-                    var lang_id = null
-                    var default_id = null
-                    for (var i = 0; i < translations.length; i++) {
-                        if ("language" in translations[i] && translations[i]['language'] == destLg) {
-                            lang_id = i
-                            break
-                        }
-                        if ("language" in translations[i] && translations[i]['language'] == "default") {
-                            default_id = i
-                        }
-                    }
-                    (lang_id === null) ? lang_id = default_id : null;
-                    (default_id === null) ? lang_id = 0 : null;
-                    if ("text" in translations[lang_id]) {
-                        yamlObject[key] = translations[lang_id]["text"]
-                    } else if ("suggestion" in translations[lang_id]) {
-                        yamlObject[key] = translations[lang_id]["suggestion"]
-                    }
-                } else { // Type 1
-                    if (yamlObject[key]["translations"] === null) continue
-                    if (destLg in yamlObject[key]["translations"]) {
-                        yamlObject[key] = yamlObject[key]["translations"][destLg]
-                    } else {
-                        yamlObject[key] = yamlObject[key]["translations"]["default"]
-                    }
-                }
-            }
-        }
-    }
-    return yamlObject
-}
-
-function selectTechLogo(tech) {
-    var basePath = '../logos/'
-    var logoFile = tech.toLowerCase()
-    if (logoFile == 'c#') logoFile = 'csharp'
-    var logoFileSvg = basePath + logoFile + ".svg"
-    var logoFilePng = basePath + logoFile + ".png"
-    if (fs.existsSync(logoFileSvg)) {
-        return '<img src="../' + logoFileSvg + '" alt="' + tech + '" class="techlogo" />'
-    }
-    if (fs.existsSync(logoFilePng)) {
-        return '<img src="../' + logoFilePng + '" alt="' + tech + '" class="techlogo" />'
-    }
-    return tech
-}
-function renderTechStack(techstack) {
-    var ts = ''
-    let i = 0
-    while (i < techstack.length) {
-        item = selectTechLogo(techstack[i])
-        if (item.substring(0, 1) == '<') {
-            if (ts.substring(ts.length - 1) != '>' && ts.length != 0) {
-                ts += ' | ' + item
-            } else {
-                ts += item
-            }
-        } else {
-            if (ts.length == 0) {
-                ts += item
-            } else if (ts.substring(ts.length - 1) == '>') {
-                ts += '| ' + item
-            } else {
-                ts += ' | ' + item
-            }
-        }
-        i++
-    }
-    return ts
 }
 
 function renderMenu(food) {
@@ -511,6 +432,7 @@ function generateItinerary(lg = "en", trip) {
     ;
     (async () => {
         const browser = await puppeteer.launch({ headless: 'new' })
+        // const browser = await puppeteer.launch()
         const page = await browser.newPage()
         const filename = `itinerary-${trip}-${versionNumber}-${lg}.pdf`
         await page.emulateMediaType('print')
